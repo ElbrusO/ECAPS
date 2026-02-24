@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ИС обработки заявок | РИМК</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="header">
+    <div class="container header-inner">
+        <img src="images/headlogo.jpg" alt="Логотип колледжа" class="logo">
+        <div class="header-text">
+            <h1>Электронная система обработки заявок колледжа</h1>
+            <p class="subtitle">ПОАНО «РИМК им. Р.Д. Примова»</p>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+
+    <section class="services">
+        <div class="service-card" onclick="openForm('certificate')">
+            <h2>📄 Заказать справку</h2>
+            <p>Оформление учебных и иных справок</p>
+        </div>
+
+        <div class="service-card" onclick="openForm('transfer')">
+            <h2>🎓 Перевод на специальность</h2>
+            <p>Подача запроса на смену направления обучения</p>
+        </div>
+
+        <div class="service-card" onclick="openForm('support')">
+            <h2>🛠 Техническая помощь</h2>
+            <p>Сообщить о проблеме или получить консультацию</p>
+        </div>
+    </section>
+
+    <section class="form-section" id="formSection">
+        <form id="requestForm">
+            <div id="dynamicFields"></div>
+
+            <div class="form-group">
+                <label id="captchaLabel"></label>
+                <input type="number" id="captchaInput" required>
+            </div>
+
+            <button type="submit" class="btn-primary">Отправить заявку</button>
+        </form>
+    </section>
+
+    <section class="success" id="successMessage">
+        <h3>Спасибо за обращение!</h3>
+        <p>Ваша заявка успешно принята администрацией колледжа.</p>
+    </section>
+
+</main>
+
+<footer class="footer">
+    © РИМК 2026
+</footer>
+
+<script>
+    let correctAnswer = 0;
+
+    function generateCaptcha() {
+        const a = Math.floor(Math.random() * 9) + 1;
+        const b = Math.floor(Math.random() * 9) + 1;
+        correctAnswer = a + b;
+        document.getElementById('captchaLabel').innerText = `${a} + ${b} = ?`;
+    }
+
+    function openForm(type) {
+        const formSection = document.getElementById('formSection');
+        const dynamicFields = document.getElementById('dynamicFields');
+        dynamicFields.innerHTML = '';
+
+        if (type === 'certificate') {
+            dynamicFields.innerHTML = `
+                <div class="form-group"><label>ФИО студента</label><input required></div>
+                <div class="form-group"><label>Тип справки</label><input required></div>
+                <div class="form-group"><label>Дата получения</label><input type="date" required></div>
+                <div class="form-group"><label>ФИО заявителя</label><input required></div>
+                <div class="form-group"><label>Телефон</label><input required></div>
+            `;
+        }
+
+        if (type === 'transfer') {
+            dynamicFields.innerHTML = `
+                <div class="form-group"><label>ФИО студента</label><input required></div>
+                <div class="form-group"><label>Текущая специальность</label><input required></div>
+                <div class="form-group"><label>Новая специальность</label><input required></div>
+                <div class="form-group"><label>Причина перевода</label><textarea required></textarea></div>
+                <div class="form-group"><label>ФИО заявителя</label><input required></div>
+                <div class="form-group"><label>Телефон</label><input required></div>
+            `;
+        }
+
+        if (type === 'support') {
+            dynamicFields.innerHTML = `
+                <div class="form-group"><label>ФИО заявителя</label><input required></div>
+                <div class="form-group"><label>Вид помощи</label><input required></div>
+                <div class="form-group"><label>Описание проблемы</label><textarea required></textarea></div>
+                <div class="form-group"><label>Телефон</label><input required></div>
+            `;
+        }
+
+        formSection.style.display = 'block';
+        document.getElementById('successMessage').style.display = 'none';
+        generateCaptcha();
+    }
+
+    document.getElementById('requestForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (parseInt(document.getElementById('captchaInput').value) !== correctAnswer) {
+            alert('Неверный ответ на капчу');
+            generateCaptcha();
+            return;
+        }
+
+        document.getElementById('formSection').style.display = 'none';
+        document.getElementById('successMessage').style.display = 'block';
+        this.reset();
+    });
+</script>
+
+</body>
+</html>
